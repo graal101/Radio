@@ -6,6 +6,9 @@
 #  
 # 
 import sys
+import vlc
+import time
+
 from PyQt6 import QtWidgets, uic
 from PyQt6 import QtSql
 from PyQt6.QtWidgets import QSystemTrayIcon, QMenu#, QAction
@@ -19,6 +22,8 @@ class MyApp(QtWidgets.QMainWindow):
         self.playlist = 'playlist_sqlite3/playlist.db'
         uic.loadUi('ui/main_radio.ui', self)
         self.createConnection()
+        
+        self.playButton.clicked.connect(self.on_playButton_click)
 
         # Настройка иконки в трей
         self.tray_icon = QSystemTrayIcon(QIcon('ico/radio-in-a-rounded-square_icon-icons.com_70636.svg'), self)
@@ -34,6 +39,13 @@ class MyApp(QtWidgets.QMainWindow):
         self.tray_icon.setContextMenu(tray_menu)
         
         self.tray_icon.show()
+        
+    def on_playButton_click(self):
+        p = vlc.MediaPlayer("https://icecast-radonezh.cdnvideo.ru/rad128")
+        p.play()
+        while True:
+            time.sleep(1)  
+            
         
     def createConnection(self):
         """Создание плейлиста базы если не существует."""
