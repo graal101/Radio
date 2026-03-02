@@ -1,19 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
-#  main_radio.py
-#  Радио онлайн
-#  
-# 
 import sys
 import vlc
-import time
-
 from PyQt6 import QtWidgets, uic
 from PyQt6 import QtSql
-from PyQt6.QtWidgets import QSystemTrayIcon, QMenu#, QAction
-from PyQt6.QtGui import QAction
-from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QSystemTrayIcon, QMenu
+from PyQt6.QtGui import QAction, QIcon
+from PyQt6.QtCore import QTimer
 
 
 class MyApp(QtWidgets.QMainWindow):
@@ -25,34 +18,35 @@ class MyApp(QtWidgets.QMainWindow):
         
         self.playButton.clicked.connect(self.on_playButton_click)
 
-        # Настройка иконки в трей
         self.tray_icon = QSystemTrayIcon(QIcon('ico/radio-in-a-rounded-square_icon-icons.com_70636.svg'), self)
         self.tray_icon.setToolTip('My Radio Tray App')
-        
-        # Создание контекстного меню для трей и добавление действий
-    
+
         tray_menu = QMenu()
         exit_action = QAction('Выход', self)
         exit_action.triggered.connect(self.exit_app)
         tray_menu.addAction(exit_action)
         
         self.tray_icon.setContextMenu(tray_menu)
-        
         self.tray_icon.show()
-        
+
+        self.player = None
+        self.timer = QTimer()
+        self.timer.setInterval(1000)
+        self.timer.timeout.connect(self.update_ui)
+
     def on_playButton_click(self):
-        p = vlc.MediaPlayer("https://icecast-radonezh.cdnvideo.ru/rad128")
-        p.play()
-        while True:
-            time.sleep(1)  
-            
+        if not self.player:
+            self.player = vlc.MediaPlayer("https://icecast-radonezh.cdnvideo.ru/rad128")
+        self.player.play()
+        self.timer.start()
         
+    def update_ui(self):
+        pass
+
     def createConnection(self):
-        """Создание плейлиста базы если не существует."""
         self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
         self.db.setDatabaseName(self.playlist)
 
-        # Создание таблицы, если она не существует
         query = QtSql.QSqlQuery()
         query.exec('''
             CREATE TABLE IF NOT EXISTS playlist (
@@ -64,6 +58,8 @@ class MyApp(QtWidgets.QMainWindow):
         print("База данных успешно создана или открыта.")
         
     def exit_app(self):
+        if self.player:
+            self.player.stop()
         QtWidgets.QApplication.quit()
 
 
@@ -72,11 +68,3 @@ if __name__ == '__main__':
     window = MyApp()
     window.show()
     sys.exit(app.exec())
-''' 
-import vlc
-import time
-p = vlc.MediaPlayer("https://icecast-radonezh.cdnvideo.ru/rad128")
-p.play()
-while True:
-    time.sleep(1)
-'''
