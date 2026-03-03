@@ -8,6 +8,24 @@ from PyQt6.QtWidgets import QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import QTimer
 
+class Stations:
+    def __init__(self):
+        self.station_names = ['https://icecast-radonezh.cdnvideo.ru/rad128', 
+                              'http://smoothjazz.cdnstream1.com/2585_64.aac',
+                              ]
+        self.pos = 0
+        
+    def upplay(self):
+        if self.pos == (len(self.station_names) - 1):
+            return self.pos
+        else:
+            return self.pos + 1
+            
+    def downplay(self):
+        if self.pos == 0:
+            return self.pos
+        else:
+            return self.pos - 1
 
 class MyApp(QtWidgets.QMainWindow):
     def __init__(self):
@@ -17,7 +35,10 @@ class MyApp(QtWidgets.QMainWindow):
         self.createConnection()
         
         self.playButton.clicked.connect(self.on_playButton_click)
-
+        self.stopButton.clicked.connect(self.on_stopButton_click)
+        self.pushUp.clicked.connect(self.on_pushUp_click)
+        self.pauseDown.clicked.connect(self.on_pauseDown_click)
+        
         self.tray_icon = QSystemTrayIcon(QIcon('ico/radio-in-a-rounded-square_icon-icons.com_70636.svg'), self)
         self.tray_icon.setToolTip('My Radio Tray App')
 
@@ -36,7 +57,25 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_playButton_click(self):
         if not self.player:
-            self.player = vlc.MediaPlayer("https://icecast-radonezh.cdnvideo.ru/rad128")
+            self.player = vlc.MediaPlayer(stnm.station_names[stnm.pos])
+        self.player.play()
+        self.timer.start()
+        
+    def on_stopButton_click(self):
+        self.player.stop()
+        self.timer.stop()
+        
+    def on_pushUp_click(self):
+        self.player.stop()
+        self.timer.stop()
+        self.player = vlc.MediaPlayer(stnm.station_names[stnm.upplay()])
+        self.player.play()
+        self.timer.start()
+        
+    def on_pauseDown_click(self):
+        self.player.stop()
+        self.timer.stop()
+        self.player = vlc.MediaPlayer(stnm.station_names[stnm.downplay()])
         self.player.play()
         self.timer.start()
         
@@ -55,7 +94,6 @@ class MyApp(QtWidgets.QMainWindow):
             )
         ''')
 
-        print("База данных успешно создана или открыта.")
         
     def exit_app(self):
         if self.player:
@@ -64,6 +102,7 @@ class MyApp(QtWidgets.QMainWindow):
 
 
 if __name__ == '__main__':
+    stnm = Stations()
     app = QtWidgets.QApplication(sys.argv)
     window = MyApp()
     window.show()
