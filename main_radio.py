@@ -10,22 +10,30 @@ from PyQt6.QtCore import QTimer
 
 class Stations:
     def __init__(self):
-        self.station_names = ['https://icecast-radonezh.cdnvideo.ru/rad128', 
-                              'http://smoothjazz.cdnstream1.com/2585_64.aac',
-                              ]
+        self.station_names = {'Радонеж-128':'https://icecast-radonezh.cdnvideo.ru/rad128',
+                              'Teos':'https://myradio24.org/radioteos', 
+                              'Smoothjazz':'http://smoothjazz.cdnstream1.com/2585_64.aac',
+                              'Bootliquor-128':'http://ice2.somafm.com/bootliquor-128-mp3',
+                              'РетроФм-256':'https://retro.hostingradio.ru:8043/retro256.mp3',
+                               # https://radiopotok-fm.ru/retrofm
+                              }
         self.pos = 0
+        self.keys = list(self.station_names.keys()) # Список названий станций
         
     def upplay(self):
         if self.pos == (len(self.station_names) - 1):
-            return self.pos
+            return self.keys[-1]
         else:
-            return self.pos + 1
+             self.pos += 1
+             return self.keys[self.pos]
             
     def downplay(self):
         if self.pos == 0:
-            return self.pos
+            return self.keys[0]
         else:
-            return self.pos - 1
+            self.pos -= 1
+            return self.keys[self.pos]
+            
 
 class MyApp(QtWidgets.QMainWindow):
     def __init__(self):
@@ -57,7 +65,7 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_playButton_click(self):
         if not self.player:
-            self.player = vlc.MediaPlayer(stnm.station_names[stnm.pos])
+            self.player = vlc.MediaPlayer(stnm.station_names[stnm.keys[stnm.pos]])
         self.player.play()
         self.timer.start()
         
@@ -69,6 +77,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.player.stop()
         self.timer.stop()
         self.player = vlc.MediaPlayer(stnm.station_names[stnm.upplay()])
+        self.statusbar.showMessage(stnm.keys[stnm.pos])
         self.player.play()
         self.timer.start()
         
@@ -76,6 +85,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.player.stop()
         self.timer.stop()
         self.player = vlc.MediaPlayer(stnm.station_names[stnm.downplay()])
+        self.statusbar.showMessage(stnm.keys[stnm.pos])
         self.player.play()
         self.timer.start()
         
