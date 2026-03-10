@@ -48,12 +48,17 @@ class MyApp(QtWidgets.QMainWindow):
         self.pauseDown.clicked.connect(self.on_pauseDown_click)
         
         self.tray_icon = QSystemTrayIcon(QIcon('ico/radio-in-a-rounded-square_icon-icons.com_70636.svg'), self)
-        self.tray_icon.setToolTip('My Radio Tray App')
+        self.tray_icon.setToolTip('Radio Tray')
 
         tray_menu = QMenu()
+        stop_action = QAction('Стоп', self)
         exit_action = QAction('Выход', self)
         exit_action.triggered.connect(self.exit_app)
+        stop_action.triggered.connect(self.on_stopButton_click)
+        
+        tray_menu.addAction(stop_action) #FIXME crash when no player 
         tray_menu.addAction(exit_action)
+        
         
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
