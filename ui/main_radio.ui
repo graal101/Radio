@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../ico/radio-in-a-rounded-square_icon-icons.com_70636.svg</normaloff>../ico/radio-in-a-rounded-square_icon-icons.com_70636.svg</iconset>
+    <normaloff>../ico/DVDPlayer_37078.png</normaloff>../ico/DVDPlayer_37078.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -49,7 +49,11 @@
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="text">
-          <string>Play</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../ico/music_player_play_icon_123828.png</normaloff>../ico/music_player_play_icon_123828.png</iconset>
          </property>
         </widget>
        </item>
@@ -59,14 +63,25 @@
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="text">
-          <string>&lt;&lt;</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../ico/prev_track_player_icon_211326.png</normaloff>../ico/prev_track_player_icon_211326.png</iconset>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushUp">
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
          <property name="text">
-          <string>&gt;&gt;</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../ico/next_track_player_icon_211204.png</normaloff>../ico/next_track_player_icon_211204.png</iconset>
          </property>
         </widget>
        </item>
@@ -76,7 +91,11 @@
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="text">
-          <string>Stop</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../ico/iconfinder-pause-stop-button-player-music-4593160_122283.png</normaloff>../ico/iconfinder-pause-stop-button-player-music-4593160_122283.png</iconset>
          </property>
         </widget>
        </item>

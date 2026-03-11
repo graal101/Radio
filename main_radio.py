@@ -47,7 +47,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.pushUp.clicked.connect(self.on_pushUp_click)
         self.pauseDown.clicked.connect(self.on_pauseDown_click)
         
-        self.tray_icon = QSystemTrayIcon(QIcon('ico/radio-in-a-rounded-square_icon-icons.com_70636.svg'), self)
+        self.tray_icon = QSystemTrayIcon(QIcon('ico/player_music_speaker_audio_sound_cassette_icon_225670.png'), self)
         self.tray_icon.setToolTip('Radio Tray')
 
         tray_menu = QMenu()
