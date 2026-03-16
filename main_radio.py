@@ -69,33 +69,34 @@ class MyApp(QtWidgets.QMainWindow):
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_ui)
         
-    def ststop(self):
-        self.player.stop()
-        self.timer.stop()
-        
-    def startst(self):
-        self.player.play()
-        self.timer.start()
+    def ststop(self, start_play=True):
+        """Вспомогательная функция старт/плей"""
+        if start_play == False:
+            self.player.stop()
+            self.timer.stop()
+        else:
+            self.player.play()
+            self.timer.start()
 
     def on_playButton_click(self):
         if not self.player:
             self.player = vlc.MediaPlayer(stnm.station_names[stnm.keys[stnm.pos]])
-        self.startst()
+        self.ststop()
         
     def on_stopButton_click(self):
-        self.ststop()
+        self.ststop(start_play=False)
         
     def on_pushUp_click(self):
-        self.ststop()
+        self.ststop(start_play=False)
         self.player = vlc.MediaPlayer(stnm.station_names[stnm.upplay()])
         self.statusbar.showMessage(stnm.keys[stnm.pos])
-        self.startst()
+        self.ststop()
         
     def on_pauseDown_click(self):
-        self.ststop()
+        self.ststop(start_play=False)
         self.player = vlc.MediaPlayer(stnm.station_names[stnm.downplay()])
         self.statusbar.showMessage(stnm.keys[stnm.pos])
-        self.startst()
+        self.ststop()
         
     def update_ui(self):
         pass
