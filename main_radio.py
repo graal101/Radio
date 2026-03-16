@@ -9,6 +9,7 @@ from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import QTimer
 
 class Stations:
+    """Класс настроек для радиостанций"""
     def __init__(self):
         self.station_names = {'Радонеж-128':'https://icecast-radonezh.cdnvideo.ru/rad128',
                               'Teos':'https://myradio24.org/radioteos', 
@@ -18,7 +19,7 @@ class Stations:
                                # https://radiopotok-fm.ru/retrofm
                               }
         self.pos = 0
-        self.keys = list(self.station_names.keys()) # Список названий станций
+        self.keys = list(self.station_names.keys()) # Список названий станций(ключей)
         
     def upplay(self):
         if self.pos == (len(self.station_names) - 1):
@@ -67,32 +68,34 @@ class MyApp(QtWidgets.QMainWindow):
         self.timer = QTimer()
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_ui)
+        
+    def ststop(self):
+        self.player.stop()
+        self.timer.stop()
+        
+    def startst(self):
+        self.player.play()
+        self.timer.start()
 
     def on_playButton_click(self):
         if not self.player:
             self.player = vlc.MediaPlayer(stnm.station_names[stnm.keys[stnm.pos]])
-        self.player.play()
-        self.timer.start()
+        self.startst()
         
     def on_stopButton_click(self):
-        self.player.stop()
-        self.timer.stop()
+        self.ststop()
         
     def on_pushUp_click(self):
-        self.player.stop()
-        self.timer.stop()
+        self.ststop()
         self.player = vlc.MediaPlayer(stnm.station_names[stnm.upplay()])
         self.statusbar.showMessage(stnm.keys[stnm.pos])
-        self.player.play()
-        self.timer.start()
+        self.startst()
         
     def on_pauseDown_click(self):
-        self.player.stop()
-        self.timer.stop()
+        self.ststop()
         self.player = vlc.MediaPlayer(stnm.station_names[stnm.downplay()])
         self.statusbar.showMessage(stnm.keys[stnm.pos])
-        self.player.play()
-        self.timer.start()
+        self.startst()
         
     def update_ui(self):
         pass
