@@ -52,23 +52,25 @@ class MyApp(QtWidgets.QMainWindow):
         self.tray_icon.setToolTip('Radio Tray')
 
         tray_menu = QMenu()
-        stop_action = QAction('Стоп', self)
-        exit_action = QAction('Выход', self)
-        exit_action.triggered.connect(self.exit_app)
-        stop_action.triggered.connect(self.on_stopButton_click)
+        self.stop_action = QAction('Стоп', self)
+        self.exit_action = QAction('Выход', self)
+        self.exit_action.triggered.connect(self.exit_app)
+        self.stop_action.triggered.connect(self.on_stopButton_click)
         
-        tray_menu.addAction(stop_action) #FIXME crash when no player 
-        tray_menu.addAction(exit_action)
+        
+        tray_menu.addAction(self.stop_action)
+        tray_menu.addAction(self.exit_action)
         
         
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
-
+        self.stop_action.setEnabled(False)
         self.player = None
         self.timer = QTimer()
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_ui)
         
+# -------- В отдельный модуль --------------------------
     def ststop(self, start_play=True):
         """Вспомогательная функция старт/плей"""
         if start_play == False:
@@ -77,11 +79,20 @@ class MyApp(QtWidgets.QMainWindow):
         else:
             self.player.play()
             self.timer.start()
+            
+    def buttons_on(self):
+        """Делает активными кнопки после старта"""
+        self.pauseDown.setEnabled(True)
+        self.pushUp.setEnabled(True)
+        self.stopButton.setEnabled(True)
+        self.stop_action.setEnabled(True)
+# ----------------------------------------------------------
 
     def on_playButton_click(self):
         if not self.player:
             self.player = vlc.MediaPlayer(stnm.station_names[stnm.keys[stnm.pos]])
         self.ststop()
+        self.buttons_on()
         
     def on_stopButton_click(self):
         self.ststop(start_play=False)
