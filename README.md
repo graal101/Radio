@@ -30,7 +30,7 @@ pip install -r requirements.txt
 
 ```bash
 git clone https://github.com/graal101/Radio.git
-cd ваш_репозиторий
+cd Radio/
 ```
 ---
 
