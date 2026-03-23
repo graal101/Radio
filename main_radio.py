@@ -3,6 +3,7 @@
 import sys
 import vlc
 from PyQt6 import QtWidgets, uic
+from PyQt6.QtGui import QStandardItemModel, QStandardItem
 from PyQt6 import QtSql
 from PyQt6.QtWidgets import QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QAction, QIcon
@@ -16,6 +17,7 @@ class Stations:
                               'Smoothjazz':'http://smoothjazz.cdnstream1.com/2585_64.aac',
                               'Bootliquor-128':'http://ice2.somafm.com/bootliquor-128-mp3',
                               'РетроФм-256':'https://retro.hostingradio.ru:8043/retro256.mp3',
+                              # 'Round table China':'https://radio-wdsl.cgtn.com/WJSL_YFMD/WJSL_YFMD/54c6f9582a80fc1e70ff5575/EE91AFFADC1B48328BEF583117E8EF90.mp3'
                                # https://radiopotok-fm.ru/retrofm
                               }
         self.pos = 0
@@ -47,6 +49,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.stopButton.clicked.connect(self.on_stopButton_click)
         self.pushUp.clicked.connect(self.on_pushUp_click)
         self.pauseDown.clicked.connect(self.on_pauseDown_click)
+        self.tableView.doubleClicked.connect(self.on_table_double_click)
         
         self.tray_icon = QSystemTrayIcon(QIcon('ico/player_music_speaker_audio_sound_cassette_icon_225670.png'), self)
         self.tray_icon.setToolTip('Radio Tray')
@@ -60,7 +63,7 @@ class MyApp(QtWidgets.QMainWindow):
         
         tray_menu.addAction(self.stop_action)
         tray_menu.addAction(self.exit_action)
-        
+        self.grid_show()
         
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
@@ -86,7 +89,28 @@ class MyApp(QtWidgets.QMainWindow):
         self.pushUp.setEnabled(True)
         self.stopButton.setEnabled(True)
         self.stop_action.setEnabled(True)
+        
+    def grid_show(self):
+        self.model = QStandardItemModel()
+        self.tableView.setModel(self.model)
+        self.model.setHorizontalHeaderLabels(['Имя'])
+        for row, value in enumerate(stnm.keys):
+            self.model.setItem(row, 0, QStandardItem(str(value)))
+        
+
 # ----------------------------------------------------------
+
+    def on_table_double_click(self, index):
+        """Выбор станций из ячейки таблицы"""
+        if not self.player:
+            return
+        row_number = index.row()
+        stnm.pos = row_number
+        st_name = stnm.keys[row_number]
+        self.ststop(start_play=False)
+        self.statusbar.showMessage(st_name)
+        self.player = vlc.MediaPlayer(stnm.station_names[st_name])
+        self.ststop()
 
     def on_playButton_click(self):
         if not self.player:
