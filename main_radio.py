@@ -17,7 +17,6 @@ class Stations:
                               'Smoothjazz':'http://smoothjazz.cdnstream1.com/2585_64.aac',
                               'Bootliquor-128':'http://ice2.somafm.com/bootliquor-128-mp3',
                               'РетроФм-256':'https://retro.hostingradio.ru:8043/retro256.mp3',
-                              # 'Round table China':'https://radio-wdsl.cgtn.com/WJSL_YFMD/WJSL_YFMD/54c6f9582a80fc1e70ff5575/EE91AFFADC1B48328BEF583117E8EF90.mp3'
                                # https://radiopotok-fm.ru/retrofm
                               }
         self.pos = 0
@@ -47,6 +46,8 @@ class MyApp(QtWidgets.QMainWindow):
         
         self.playButton.clicked.connect(self.on_playButton_click)
         self.stopButton.clicked.connect(self.on_stopButton_click)
+        self.pushQuit.clicked.connect(self.close)
+        
         self.pushUp.clicked.connect(self.on_pushUp_click)
         self.pauseDown.clicked.connect(self.on_pauseDown_click)
         self.tableView.doubleClicked.connect(self.on_table_double_click)
@@ -102,11 +103,18 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_table_double_click(self, index):
         """Выбор станций из ячейки таблицы"""
-        if not self.player:
-            return
         row_number = index.row()
         stnm.pos = row_number
         st_name = stnm.keys[row_number]
+        
+        if not self.player:
+            # Если нет ещё активного проигрывателя
+            self.player = vlc.MediaPlayer(stnm.station_names[st_name])
+            self.statusbar.showMessage(st_name)
+            self.ststop()
+            self.buttons_on()
+            return
+        
         self.ststop(start_play=False)
         self.statusbar.showMessage(st_name)
         self.player = vlc.MediaPlayer(stnm.station_names[st_name])
