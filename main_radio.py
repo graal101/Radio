@@ -8,34 +8,7 @@ from PyQt6 import QtSql
 from PyQt6.QtWidgets import QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import QTimer
-
-class Stations:
-    """Класс настроек для радиостанций"""
-    def __init__(self):
-        self.station_names = {'Радонеж-128':'https://icecast-radonezh.cdnvideo.ru/rad128',
-                              'Teos':'https://myradio24.org/radioteos', 
-                              'Smoothjazz':'http://smoothjazz.cdnstream1.com/2585_64.aac',
-                              'Bootliquor-128':'http://ice2.somafm.com/bootliquor-128-mp3',
-                              'РетроФм-256':'https://retro.hostingradio.ru:8043/retro256.mp3',
-                               # https://radiopotok-fm.ru/retrofm
-                              }
-        self.pos = 0
-        self.keys = list(self.station_names.keys()) # Список названий станций(ключей)
-        
-    def upplay(self):
-        if self.pos == (len(self.station_names) - 1):
-            return self.keys[-1]
-        else:
-             self.pos += 1
-             return self.keys[self.pos]
-            
-    def downplay(self):
-        if self.pos == 0:
-            return self.keys[0]
-        else:
-            self.pos -= 1
-            return self.keys[self.pos]
-            
+from playlist_sqlite3.stations import Stations
 
 class MyApp(QtWidgets.QMainWindow):
     def __init__(self):
@@ -46,7 +19,7 @@ class MyApp(QtWidgets.QMainWindow):
         
         self.playButton.clicked.connect(self.on_playButton_click)
         self.stopButton.clicked.connect(self.on_stopButton_click)
-        self.pushQuit.clicked.connect(self.close)
+        self.pushQuit.clicked.connect(self.exit_app)
         
         self.pushUp.clicked.connect(self.on_pushUp_click)
         self.pauseDown.clicked.connect(self.on_pauseDown_click)
@@ -77,7 +50,7 @@ class MyApp(QtWidgets.QMainWindow):
 # -------- В отдельный модуль --------------------------
     def ststop(self, start_play=True):
         """Вспомогательная функция старт/плей"""
-        if start_play == False:
+        if not start_play:
             self.player.stop()
             self.timer.stop()
         else:
@@ -128,19 +101,19 @@ class MyApp(QtWidgets.QMainWindow):
         
     def on_stopButton_click(self):
         self.ststop(start_play=False)
-        
+
     def on_pushUp_click(self):
         self.ststop(start_play=False)
         self.player = vlc.MediaPlayer(stnm.station_names[stnm.upplay()])
         self.statusbar.showMessage(stnm.keys[stnm.pos])
         self.ststop()
-        
+
     def on_pauseDown_click(self):
         self.ststop(start_play=False)
         self.player = vlc.MediaPlayer(stnm.station_names[stnm.downplay()])
         self.statusbar.showMessage(stnm.keys[stnm.pos])
         self.ststop()
-        
+
     def update_ui(self):
         pass
 
@@ -149,14 +122,13 @@ class MyApp(QtWidgets.QMainWindow):
         self.db.setDatabaseName(self.playlist)
 
         query = QtSql.QSqlQuery()
-        query.exec('''
+        query.exec("""
             CREATE TABLE IF NOT EXISTS playlist (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 note TEXT NOT NULL
             )
-        ''')
+        """)
 
-        
     def exit_app(self):
         if self.player:
             self.player.stop()
