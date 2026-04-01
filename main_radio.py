@@ -4,18 +4,18 @@ import sys
 import vlc
 from PyQt6 import QtWidgets, uic
 from PyQt6.QtGui import QStandardItemModel, QStandardItem
-from PyQt6 import QtSql
+
 from PyQt6.QtWidgets import QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import QTimer
+
 from playlist_sqlite3.stations import Stations
+from playlist_sqlite3.manager import Manager
 
 class MyApp(QtWidgets.QMainWindow):
     def __init__(self):
         super(MyApp, self).__init__()
-        self.playlist = 'playlist_sqlite3/playlist.db'
         uic.loadUi('ui/main_radio.ui', self)
-        self.createConnection()
         
         self.playButton.clicked.connect(self.on_playButton_click)
         self.stopButton.clicked.connect(self.on_stopButton_click)
@@ -46,6 +46,9 @@ class MyApp(QtWidgets.QMainWindow):
         self.timer = QTimer()
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_ui)
+        
+        sql3 = Manager()
+        sql3.createConnection()
         
 # -------- В отдельный модуль --------------------------
     def ststop(self, start_play=True):
@@ -117,18 +120,6 @@ class MyApp(QtWidgets.QMainWindow):
     def update_ui(self):
         pass
 
-    def createConnection(self):
-        self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
-        self.db.setDatabaseName(self.playlist)
-
-        query = QtSql.QSqlQuery()
-        query.exec("""
-            CREATE TABLE IF NOT EXISTS playlist (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                note TEXT NOT NULL
-            )
-        """)
-
     def exit_app(self):
         if self.player:
             self.player.stop()
@@ -136,7 +127,7 @@ class MyApp(QtWidgets.QMainWindow):
 
 
 if __name__ == '__main__':
-    stnm = Stations()
+    stnm = Stations() # Перенести
     app = QtWidgets.QApplication(sys.argv)
     window = MyApp()
     window.show()
