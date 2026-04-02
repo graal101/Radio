@@ -8,6 +8,7 @@ from PyQt6.QtGui import QStandardItemModel, QStandardItem
 from PyQt6.QtWidgets import QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import QFontDialog
 
 from playlist_sqlite3.stations import Stations
 from playlist_sqlite3.manager import Manager
@@ -20,10 +21,11 @@ class MyApp(QtWidgets.QMainWindow):
         self.playButton.clicked.connect(self.on_playButton_click)
         self.stopButton.clicked.connect(self.on_stopButton_click)
         self.pushQuit.clicked.connect(self.exit_app)
-        
         self.pushUp.clicked.connect(self.on_pushUp_click)
         self.pauseDown.clicked.connect(self.on_pauseDown_click)
         self.tableView.doubleClicked.connect(self.on_table_double_click)
+        self.mn_quit.triggered.connect(self.exit_app)
+        self.mn_font.triggered.connect(self.choose_font)
         
         self.tray_icon = QSystemTrayIcon(QIcon('ico/player_music_speaker_audio_sound_cassette_icon_225670.png'), self)
         self.tray_icon.setToolTip('Radio Tray')
@@ -76,6 +78,11 @@ class MyApp(QtWidgets.QMainWindow):
         
 
 # ----------------------------------------------------------
+    def choose_font(self):
+        """Выбор шрифта для таблички"""
+        font, ok = QFontDialog.getFont()
+        if ok:
+            self.tableView.setFont(font)
 
     def on_table_double_click(self, index):
         """Выбор станций из ячейки таблицы"""
