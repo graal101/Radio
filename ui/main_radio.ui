@@ -178,6 +178,8 @@
     <property name="title">
      <string>Плейлист</string>
     </property>
+    <addaction name="mn_plus"/>
+    <addaction name="mn_minus"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -201,6 +203,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="mn_plus">
+   <property name="text">
+    <string>+ Радиостанция</string>
+   </property>
+  </action>
+  <action name="mn_minus">
+   <property name="text">
+    <string>- Радиостанция</string>
    </property>
   </action>
  </widget>
