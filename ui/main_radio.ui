@@ -172,6 +172,9 @@
     <property name="title">
      <string>Управление</string>
     </property>
+    <addaction name="action"/>
+    <addaction name="action_2"/>
+    <addaction name="separator"/>
     <addaction name="mn_quit"/>
    </widget>
    <widget class="QMenu" name="menu_2">
@@ -213,6 +216,16 @@
   <action name="mn_minus">
    <property name="text">
     <string>- Радиостанция</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>Стоп</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>Пауза</string>
    </property>
   </action>
  </widget>
