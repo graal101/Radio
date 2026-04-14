@@ -13,6 +13,8 @@ from PyQt6.QtWidgets import QFontDialog
 from playlist_sqlite3.stations import Stations
 from playlist_sqlite3.manager import Manager
 
+# Названия треков онлайн!
+
 class MyApp(QtWidgets.QMainWindow):
     def __init__(self):
         super(MyApp, self).__init__()

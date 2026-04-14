@@ -172,8 +172,8 @@
     <property name="title">
      <string>Управление</string>
     </property>
-    <addaction name="action"/>
-    <addaction name="action_2"/>
+    <addaction name="mn_play"/>
+    <addaction name="mn_stop"/>
     <addaction name="separator"/>
     <addaction name="mn_quit"/>
    </widget>
@@ -218,7 +218,7 @@
     <string>- Радиостанция</string>
    </property>
   </action>
-  <action name="action">
+  <action name="mn_stop">
    <property name="text">
     <string>Стоп</string>
    </property>
@@ -226,6 +226,11 @@
   <action name="action_2">
    <property name="text">
     <string>Пауза</string>
+   </property>
+  </action>
+  <action name="mn_play">
+   <property name="text">
+    <string>Играть</string>
    </property>
   </action>
  </widget>
