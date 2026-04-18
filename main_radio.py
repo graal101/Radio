@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import vlc
+from vlc import Meta
 from PyQt6 import QtWidgets, uic
 from PyQt6.QtGui import QStandardItemModel, QStandardItem
 
