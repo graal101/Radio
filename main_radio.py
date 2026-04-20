@@ -14,7 +14,7 @@ from PyQt6.QtWidgets import QFontDialog
 from playlist_sqlite3.stations import Stations
 from playlist_sqlite3.manager import Manager
 
-# Названия треков онлайн!
+# Названия треков онлайн (доделать)!
 
 class MyApp(QtWidgets.QMainWindow):
     def __init__(self):
@@ -26,6 +26,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.pushQuit.clicked.connect(self.exit_app)
         self.pushUp.clicked.connect(self.on_pushUp_click)
         self.pauseDown.clicked.connect(self.on_pauseDown_click)
+        self.nameTreckButton.clicked.connect(self.on_nameTreckButton_click)
         self.tableView.doubleClicked.connect(self.on_table_double_click)
         self.mn_quit.triggered.connect(self.exit_app)
         self.mn_font.triggered.connect(self.choose_font)
@@ -79,7 +80,21 @@ class MyApp(QtWidgets.QMainWindow):
         for row, value in enumerate(stnm.keys):
             self.model.setItem(row, 0, QStandardItem(str(value)))
         
-
+    def get_current_track_info(self):
+        if not getattr(self, 'player', None):
+            return {}
+        media = self.player.get_media()
+        if not media:
+            return {}
+        try:
+            media.parse_with_options(vlc.MediaParseFlag.fetch_local | vlc.MediaParseFlag.fetch_network, timeout=2)
+        except Exception:
+            pass
+        return {
+            'title': media.get_meta(vlc.Meta.Title) or '',
+            'artist': media.get_meta(vlc.Meta.Artist) or '',
+            'now_playing': media.get_meta(vlc.Meta.NowPlaying) or ''
+        }
 # ----------------------------------------------------------
     def choose_font(self):
         """Выбор шрифта для таблички"""
@@ -105,6 +120,15 @@ class MyApp(QtWidgets.QMainWindow):
         self.statusbar.showMessage(st_name)
         self.player = vlc.MediaPlayer(stnm.station_names[st_name])
         self.ststop()
+        
+    def on_nameTreckButton_click(self):
+        """Информация о проигрываемом треке."""
+        info = self.get_current_track_info()
+        nm = info.get('now_playing')
+        print(info)
+        text =  nm if nm else 'Информация о треке недоступна'
+        self.statusbar.showMessage(text)
+        
 
     def on_playButton_click(self):
         if not self.player:
